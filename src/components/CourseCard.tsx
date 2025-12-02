@@ -17,8 +17,6 @@ const CourseCard = ({ ...props }: ICourse) => {
     return `${mins}m`;
   };
 
-  console.log("course card props", props);
-
   return (
     <div className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
       <Link to={`/courses/${props._id}`} className="block">

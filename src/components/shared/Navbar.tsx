@@ -1,14 +1,14 @@
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import { Link } from "react-router";
-import { Button } from "../ui/button";
 import { ModeToggle } from "../mode-toggle";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchValue } from "@/redux/searchSlice";
 const Navbar = () => {
+  const searchValue = useSelector(
+    (state: { search: { value: string } }) => state.search.value
+  );
+  const dispatch = useDispatch();
+
+  console.log("Navbar render with searchValue:", searchValue);
+
   return (
     <>
       {/* <nav className="w-full flex h-16 items-center justify-between p-4 bg-green-300 shadow-md">
@@ -52,6 +52,8 @@ const Navbar = () => {
             type="text"
             placeholder="Search"
             className="input input-bordered w-24 md:w-auto"
+            value={searchValue}
+            onChange={(e) => dispatch(setSearchValue(e.target.value))}
           />
           <div className="dropdown dropdown-end">
             <div
@@ -67,7 +69,7 @@ const Navbar = () => {
               </div>
             </div>
             <ul
-              tabIndex="-1"
+              tabIndex={-1}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               <li>

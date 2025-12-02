@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/baseApi";
+import type { ICourse } from "@/types/course";
 
 interface GetCoursesParams {
   page?: number;
@@ -12,19 +13,35 @@ interface GetCoursesParams {
   tags?: string;
 }
 
+interface GetCoursesResponse {
+  success: boolean;
+  data: {
+    courses: ICourse[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+  message?: string;
+}
+
 const courseApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCourses: builder.query({
       query: (params: GetCoursesParams = {}) => {
         const queryParams = new URLSearchParams();
 
-        if (params.page) queryParams.append("page", params.page.toString());
-        if (params.limit) queryParams.append("limit", params.limit.toString());
+        if (params.page !== undefined)
+          queryParams.append("page", params.page.toString());
+        if (params.limit !== undefined)
+          queryParams.append("limit", params.limit.toString());
         if (params.search) queryParams.append("search", params.search);
         if (params.category) queryParams.append("category", params.category);
-        if (params.minPrice)
+        if (params.minPrice !== undefined)
           queryParams.append("minPrice", params.minPrice.toString());
-        if (params.maxPrice)
+        if (params.maxPrice !== undefined)
           queryParams.append("maxPrice", params.maxPrice.toString());
         if (params.sortBy) queryParams.append("sortBy", params.sortBy);
         if (params.sortOrder) queryParams.append("sortOrder", params.sortOrder);
@@ -43,7 +60,7 @@ const courseApi = baseApi.injectEndpoints({
         url: `/courses/${id}`,
         method: "GET",
       }),
-      providesTags: ["Courses"],
+      providesTags: (result, error, id) => [{ type: "Courses", id }],
     }),
   }),
 });
