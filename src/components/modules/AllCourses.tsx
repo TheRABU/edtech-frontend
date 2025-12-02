@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { useGetCoursesQuery } from "@/redux/features/course/course.api";
 import CourseCard from "../CourseCard";

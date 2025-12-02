@@ -1,4 +1,6 @@
 import RootLayout from "@/layouts/RootLayout";
+import Login from "@/pages/auth/Login";
+import Signup from "@/pages/auth/Signup";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
 import HomePage from "@/pages/home/HomePage";
 
@@ -17,6 +19,14 @@ const AllRoutes = () => {
         {
           path: "/courses/:id",
           element: <CourseDetailsPage />,
+        },
+        {
+          path: "/login",
+          element: <Login />,
+        },
+        {
+          path: "/signup",
+          element: <Signup />,
         },
       ],
     },

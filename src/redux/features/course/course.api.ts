@@ -13,7 +13,7 @@ interface GetCoursesParams {
   tags?: string;
 }
 
-interface GetCoursesResponse {
+export interface GetCoursesResponse {
   success: boolean;
   data: {
     courses: ICourse[];
