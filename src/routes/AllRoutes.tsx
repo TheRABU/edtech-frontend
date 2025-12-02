@@ -1,5 +1,6 @@
-import App from "@/App";
 import RootLayout from "@/layouts/RootLayout";
+import CourseDetailsPage from "@/pages/course/CourseDetails";
+import HomePage from "@/pages/home/HomePage";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -11,7 +12,11 @@ const AllRoutes = () => {
       children: [
         {
           path: "/",
-          element: <App />,
+          element: <HomePage />,
+        },
+        {
+          path: "/courses/:id",
+          element: <CourseDetailsPage />,
         },
       ],
     },
