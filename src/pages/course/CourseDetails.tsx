@@ -48,10 +48,10 @@ const CourseDetailsPage = () => {
             Course not found
           </h2>
           <button
-            onClick={() => navigate("/courses")}
+            onClick={() => navigate("/")}
             className="text-indigo-600 hover:text-indigo-700 font-medium"
           >
-            ← Back to courses
+            ← Back to Home
           </button>
         </div>
       </div>
@@ -118,7 +118,7 @@ const CourseDetailsPage = () => {
                   <span className="text-sm">Duration</span>
                 </div>
                 <p className="font-semibold text-gray-900">
-                  {/* {formatDuration(totalDuration)} */} 0000
+                  {formatDuration(totalDuration)}
                 </p>
               </div>
 
@@ -189,7 +189,7 @@ const CourseDetailsPage = () => {
                 Course Content
               </h2>
               <div className="space-y-3">
-                {course.modules
+                {[...course.modules]
                   .sort((a, b) => a.order - b.order)
                   .map((module, index) => (
                     <div
