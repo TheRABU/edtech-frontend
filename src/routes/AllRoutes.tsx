@@ -1,6 +1,10 @@
+import DashboardLayout from "@/layouts/DashboardLayout";
 import RootLayout from "@/layouts/RootLayout";
 import Login from "@/pages/auth/Login";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
+import CourseContent from "@/pages/dashboard/CourseContents";
+import DashboardHome from "@/pages/dashboard/DashboardHome";
+import MyCourses from "@/pages/dashboard/MyCourses";
 import HomePage from "@/pages/home/HomePage";
 import Unauthorized from "@/pages/Unauthorized";
 
@@ -27,6 +31,29 @@ const AllRoutes = () => {
         {
           path: "/unauthorized",
           element: <Unauthorized />,
+        },
+      ],
+    },
+    {
+      path: "/dashboard",
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: "/dashboard",
+          element: <DashboardHome />,
+        },
+        {
+          path: "courses",
+          children: [
+            {
+              index: true,
+              element: <MyCourses />,
+            },
+            {
+              path: ":enrollmentId",
+              element: <CourseContent />,
+            },
+          ],
         },
       ],
     },

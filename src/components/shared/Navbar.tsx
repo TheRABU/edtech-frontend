@@ -70,6 +70,11 @@ const Navbar = () => {
                     <span className="badge">Logged in</span>
                   </a>
                 </li>
+                <li>
+                  <Link to="/dashboard" className="justify-between text-white">
+                    Dashboard
+                  </Link>
+                </li>
                 <Button onClick={handleLogout} className="w-full">
                   Logout
                 </Button>

@@ -1,6 +1,10 @@
 import { useParams, useNavigate } from "react-router";
 import { useGetCourseByIdQuery } from "@/redux/features/course/course.api";
 import {
+  useCheckEnrollmentQuery,
+  useEnrollCourseMutation,
+} from "@/redux/features/enrollment/enrollment.api";
+import {
   Clock,
   BookOpen,
   DollarSign,
@@ -10,14 +14,92 @@ import {
   ArrowLeft,
   PlayCircle,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
+import { useState } from "react";
+
+import { useAuth } from "@/hooks/useAuth";
 
 const CourseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [selectedBatch, setSelectedBatch] = useState<string>("");
+
+  const { isAuthenticated } = useAuth();
+
   const { data, isLoading, isError } = useGetCourseByIdQuery(id || "");
 
-  console.log("course details data", data);
+  const { data: enrollmentCheck, isLoading: checkingEnrollment } =
+    useCheckEnrollmentQuery(id || "", {
+      skip: !isAuthenticated || !id,
+    });
+
+  // Enrollment mutation
+  const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
+
+  console.log("enrollment check", enrollmentCheck);
+
+  const handleEnroll = async () => {
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: `/courses/${id}` } });
+      return;
+    }
+
+    if (!selectedBatch) {
+      if (data?.data?.batches?.length === 1) {
+        setSelectedBatch(data.data.batches[0].batchId);
+        await proceedWithEnrollment(data.data.batches[0].batchId);
+      } else {
+        alert("Please select a batch to enroll in");
+      }
+      return;
+    }
+
+    await proceedWithEnrollment(selectedBatch);
+  };
+
+  const proceedWithEnrollment = async (batchId: string) => {
+    try {
+      const result = await enrollCourse({
+        courseId: id!,
+        batchId,
+      }).unwrap();
+
+      console.log("Enrollment successful:", result);
+      navigate("/dashboard/courses", {
+        state: {
+          message: "Successfully enrolled in the course!",
+          showSuccess: true,
+        },
+      });
+    } catch (error: any) {
+      console.error("Enrollment error:", error);
+
+      if (error?.data?.message?.includes("Already enrolled")) {
+        // If already enrolled, redirect to dashboard
+        navigate("/dashboard/courses", {
+          state: {
+            message: "You are already enrolled in this course",
+            showInfo: true,
+          },
+        });
+      } else if (error?.status === 401) {
+        // Unauthorized - redirect to login
+        navigate("/login", { state: { from: `/courses/${id}` } });
+      } else {
+        // Generic error
+        alert(error?.data?.message || "Failed to enroll. Please try again.");
+      }
+    }
+  };
+
+  const handleGoToCourse = () => {
+    if (enrollmentCheck?.enrollmentId) {
+      navigate(`/dashboard/courses/${enrollmentCheck.enrollmentId}`);
+    } else {
+      navigate("/dashboard/courses");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -69,6 +151,23 @@ const CourseDetailsPage = () => {
     const mins = minutes % 60;
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
   };
+
+  let buttonText = "Enroll Now";
+  let buttonColor = "bg-indigo-600 hover:bg-indigo-700";
+  let isButtonDisabled = false;
+
+  if (!isAuthenticated) {
+    buttonText = "Login to Enroll";
+  } else if (checkingEnrollment) {
+    buttonText = "Checking...";
+    isButtonDisabled = true;
+  } else if (enrollmentCheck?.isEnrolled) {
+    buttonText = "Go to Course";
+    buttonColor = "bg-green-600 hover:bg-green-700";
+  } else if (isEnrolling) {
+    buttonText = "Enrolling...";
+    isButtonDisabled = true;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -236,8 +335,69 @@ const CourseDetailsPage = () => {
                 <p className="text-gray-600">One-time payment</p>
               </div>
 
-              <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors mb-4 shadow-md hover:shadow-lg">
-                Enroll Now
+              {/* Enrollment status indicator */}
+              {isAuthenticated && enrollmentCheck?.isEnrolled && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-medium">You are enrolled</span>
+                  </div>
+                  <p className="text-sm text-green-600 mt-1">
+                    Start learning now!
+                  </p>
+                </div>
+              )}
+
+              {/* Batch Selection (only show if not enrolled and multiple batches) */}
+              {!enrollmentCheck?.isEnrolled &&
+                course.batches.length > 1 &&
+                isAuthenticated && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Batch
+                    </label>
+                    <select
+                      value={selectedBatch}
+                      onChange={(e) => setSelectedBatch(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      disabled={isEnrolling}
+                    >
+                      <option value="">Choose a batch</option>
+                      {course.batches.map((batch, index) => (
+                        <option key={index} value={batch.batchId}>
+                          {batch.batchId} - Starts:{" "}
+                          {new Date(batch.startDate).toLocaleDateString()}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+              {/* Enroll Button */}
+              <button
+                onClick={() => {
+                  if (enrollmentCheck?.isEnrolled) {
+                    handleGoToCourse();
+                  } else {
+                    handleEnroll();
+                  }
+                }}
+                disabled={isButtonDisabled}
+                className={`w-full ${buttonColor} text-white font-semibold py-3 px-6 rounded-lg transition-colors mb-4 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+              >
+                {isEnrolling ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Enrolling...
+                  </>
+                ) : checkingEnrollment ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Checking...
+                  </>
+                ) : (
+                  buttonText
+                )}
               </button>
 
               <div className="border-t border-gray-200 pt-4">
@@ -274,7 +434,11 @@ const CourseDetailsPage = () => {
                     {course.batches.map((batch, index) => (
                       <div
                         key={index}
-                        className="text-sm bg-gray-50 p-3 rounded-lg"
+                        className={`text-sm p-3 rounded-lg ${
+                          selectedBatch === batch.batchId
+                            ? "bg-indigo-50 border border-indigo-200"
+                            : "bg-gray-50"
+                        }`}
                       >
                         <p className="font-medium text-gray-900">
                           {batch.batchId}

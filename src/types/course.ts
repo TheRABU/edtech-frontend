@@ -32,8 +32,8 @@ export interface ICourse {
   category: string;
   tags: string[];
   thumbnail?: string;
-  modules: readonly IModule[];
-  batches: readonly IBatch[];
+  modules: IModule[];
+  batches: IBatch[];
   isDeleted: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
