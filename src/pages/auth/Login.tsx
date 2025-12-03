@@ -129,7 +129,7 @@ const Login: React.FC = () => {
     }
 
     if (!validatePassword(formData.password)) {
-      setErrorMessage("Password must be at least 8 characters");
+      setErrorMessage("Password must be at least 6 characters");
       return;
     }
 
@@ -151,14 +151,15 @@ const Login: React.FC = () => {
           email: formData.email,
           password: formData.password,
         }).unwrap();
-        //   } else {
-        //     await register({
-        //       name: formData.name,
-        //       email: formData.email,
-        //       password: formData.password,
-        //     }).unwrap();
+      } else {
+        await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }).unwrap();
       }
     } catch (error) {
+      // Error is already handled in useEffect
       console.error("Auth error:", error);
     }
   };
@@ -177,6 +178,7 @@ const Login: React.FC = () => {
     return false;
   };
 
+  // Clear messages when switching modes
   const handleModeSwitch = () => {
     setIsLogin(!isLogin);
     setErrorMessage("");
@@ -190,25 +192,26 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="min-h-screen flex">
+        {/* Left Side - Auth Forms */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8">
           <div className="w-full max-w-md">
             {/* Form Container */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
               {/* Logo */}
               <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
                   {isLogin ? (
-                    <LogIn className="w-8 h-8 text-red-600" />
+                    <LogIn className="w-8 h-8 text-red-600 dark:text-red-400" />
                   ) : (
-                    <UserPlus className="w-8 h-8 text-red-600" />
+                    <UserPlus className="w-8 h-8 text-red-600 dark:text-red-400" />
                   )}
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                   {isLogin ? "Welcome Back!" : "Create Account"}
                 </h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-600 dark:text-gray-300 mt-2">
                   {isLogin
                     ? "Please sign in to continue"
                     : "Get started with your account"}
@@ -217,17 +220,19 @@ const Login: React.FC = () => {
 
               {/* Error Message */}
               {errorMessage && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-600">{errorMessage}</p>
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-600 dark:text-red-400">
+                    {errorMessage}
+                  </p>
                 </div>
               )}
 
               {/* Success Message */}
               {successMessage && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
+                <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-3">
                   <svg
-                    className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                    className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -239,7 +244,9 @@ const Login: React.FC = () => {
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <p className="text-sm text-green-600">{successMessage}</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    {successMessage}
+                  </p>
                 </div>
               )}
 
@@ -248,7 +255,7 @@ const Login: React.FC = () => {
                 {/* Name Field (Register only) */}
                 {!isLogin && (
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Full Name
                     </label>
                     <input
@@ -256,7 +263,7 @@ const Login: React.FC = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 focus:border-transparent transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400 disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed"
                       placeholder="John Doe"
                       required={!isLogin}
                       disabled={isLoading}
@@ -266,7 +273,7 @@ const Login: React.FC = () => {
 
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Email Address
                   </label>
                   <div className="relative">
@@ -275,15 +282,15 @@ const Login: React.FC = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors pr-10 disabled:bg-gray-50"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 focus:border-transparent transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400 disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed pr-10"
                       placeholder="you@example.com"
                       required
                       disabled={isLoading}
                     />
-                    <Mail className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
+                    <Mail className="absolute right-3 top-3 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" />
                   </div>
                   {formData.email && !validateEmail(formData.email) && (
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm text-red-600 dark:text-red-400">
                       Please enter a valid email address
                     </p>
                   )}
@@ -291,7 +298,7 @@ const Login: React.FC = () => {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Password
                   </label>
                   <div className="relative">
@@ -300,14 +307,14 @@ const Login: React.FC = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors pr-10 disabled:bg-gray-50"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 focus:border-transparent transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400 disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed pr-10"
                       placeholder="••••••••"
                       required
                       disabled={isLoading}
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                      className="absolute right-3 top-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
                       disabled={isLoading}
@@ -321,8 +328,8 @@ const Login: React.FC = () => {
                   </div>
                   {formData.password &&
                     !validatePassword(formData.password) && (
-                      <p className="text-sm text-red-600">
-                        Password must be at least 8 characters
+                      <p className="text-sm text-red-600 dark:text-red-400">
+                        Password must be at least 6 characters
                       </p>
                     )}
                 </div>
@@ -330,7 +337,7 @@ const Login: React.FC = () => {
                 {/* Confirm Password Field (Register only) */}
                 {!isLogin && (
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Confirm Password
                     </label>
                     <div className="relative">
@@ -339,14 +346,14 @@ const Login: React.FC = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors pr-10 disabled:bg-gray-50"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 focus:border-transparent transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400 disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed pr-10"
                         placeholder="••••••••"
                         required={!isLogin}
                         disabled={isLoading}
                       />
                       <button
                         type="button"
-                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                        className="absolute right-3 top-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
@@ -361,7 +368,7 @@ const Login: React.FC = () => {
                       </button>
                     </div>
                     {formData.confirmPassword && !validateConfirmPassword() && (
-                      <p className="text-sm text-red-600">
+                      <p className="text-sm text-red-600 dark:text-red-400">
                         Passwords do not match
                       </p>
                     )}
@@ -372,7 +379,7 @@ const Login: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitDisabled()}
-                  className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-red-600 dark:bg-red-700 text-white py-3 rounded-lg font-semibold hover:bg-red-700 dark:hover:bg-red-600 focus:ring-4 focus:ring-red-600 dark:focus:ring-red-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="inline-flex items-center justify-center">
@@ -406,13 +413,13 @@ const Login: React.FC = () => {
                 </button>
 
                 {/* Form Switch */}
-                <p className="text-center text-gray-600">
+                <p className="text-center text-gray-600 dark:text-gray-400">
                   {isLogin
                     ? "Don't have an account?"
                     : "Already have an account?"}
                   <button
                     type="button"
-                    className="ml-1 text-red-600 hover:text-red-700 font-semibold focus:outline-none disabled:opacity-50"
+                    className="ml-1 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-semibold focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleModeSwitch}
                     disabled={isLoading}
                   >
@@ -433,7 +440,7 @@ const Login: React.FC = () => {
                 "url('https://plus.unsplash.com/premium_photo-1713296255442-e9338f42aad8?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
             }}
           />
-          <div className="relative z-10 h-full w-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="relative z-10 h-full w-full bg-opacity-50 flex items-center justify-center">
             <div className="text-center text-white px-12 max-w-2xl">
               <h2 className="text-4xl font-bold mb-6">Unlock Your Potential</h2>
               <p className="text-xl">

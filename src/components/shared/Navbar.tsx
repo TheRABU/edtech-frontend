@@ -81,9 +81,6 @@ const Navbar = () => {
               <Button>
                 <Link to="/login">Login</Link>
               </Button>
-              <Button>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
             </div>
           )}
         </div>

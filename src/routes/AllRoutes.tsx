@@ -1,6 +1,5 @@
 import RootLayout from "@/layouts/RootLayout";
 import Login from "@/pages/auth/Login";
-import Signup from "@/pages/auth/Signup";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
 import HomePage from "@/pages/home/HomePage";
 import Unauthorized from "@/pages/Unauthorized";
@@ -24,10 +23,6 @@ const AllRoutes = () => {
         {
           path: "/login",
           element: <Login />,
-        },
-        {
-          path: "/signup",
-          element: <Signup />,
         },
         {
           path: "/unauthorized",
