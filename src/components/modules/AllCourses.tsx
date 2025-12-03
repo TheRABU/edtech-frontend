@@ -49,10 +49,6 @@ const AllCourses = () => {
     search: debouncedSearch,
   });
 
-  console.log("API Response:", apiResponse);
-  console.log("Search value:", searchValue);
-  console.log("Debounced search:", debouncedSearch);
-
   let coursesData: ICourse[] = [];
   let pagination = {
     total: 0,

@@ -3,6 +3,7 @@ import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
 import HomePage from "@/pages/home/HomePage";
+import Unauthorized from "@/pages/Unauthorized";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -27,6 +28,10 @@ const AllRoutes = () => {
         {
           path: "/signup",
           element: <Signup />,
+        },
+        {
+          path: "/unauthorized",
+          element: <Unauthorized />,
         },
       ],
     },

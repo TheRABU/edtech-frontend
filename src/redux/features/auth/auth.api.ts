@@ -15,6 +15,14 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userInfo,
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(authApi.util.invalidateTags(["Auth"]));
+        } catch (error) {
+          console.error("Login error:", error);
+        }
+      },
     }),
     logout: builder.mutation({
       query: () => ({
@@ -22,9 +30,31 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
       }),
       invalidatesTags: ["Auth"],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(authApi.util.invalidateTags(["Auth"]));
+
+          dispatch(authApi.util.resetApiState());
+        } catch (error) {
+          console.error("Logout error:", error);
+
+          dispatch(authApi.util.invalidateTags(["Auth"]));
+        }
+      },
+    }),
+    getMe: builder.query({
+      query: () => ({
+        url: "/user/me",
+      }),
+      providesTags: ["Auth"],
     }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useGetMeQuery,
+} = authApi;
