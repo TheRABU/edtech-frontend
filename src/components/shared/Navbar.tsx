@@ -5,10 +5,14 @@ import { Button } from "../ui/button";
 import { Link } from "react-router";
 import {
   useGetMeQuery,
+  useIsAdminQuery,
   useLogoutMutation,
 } from "@/redux/features/auth/auth.api";
 const Navbar = () => {
   const { data } = useGetMeQuery(undefined);
+  const { data: isAdminData } = useIsAdminQuery(undefined);
+
+  console.log("isAdminData:", isAdminData);
 
   const searchValue = useSelector(
     (state: { search: { value: string } }) => state.search.value
@@ -75,6 +79,17 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 </li>
+                <hr />
+                {isAdminData?.data?.role === "ADMIN" && (
+                  <li>
+                    <Link
+                      to="/admin/dashboard"
+                      className="justify-between text-white"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  </li>
+                )}
                 <Button onClick={handleLogout} className="w-full">
                   Logout
                 </Button>

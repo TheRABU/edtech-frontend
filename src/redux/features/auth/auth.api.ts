@@ -49,6 +49,12 @@ const authApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Auth"],
     }),
+    isAdmin: builder.query({
+      query: () => ({
+        url: "/user/is-admin",
+      }),
+      providesTags: ["Auth"],
+    }),
   }),
 });
 
@@ -57,4 +63,5 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useGetMeQuery,
+  useIsAdminQuery,
 } = authApi;

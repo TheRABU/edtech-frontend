@@ -19,7 +19,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AllCourses = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(8);
-  const [searchTerm, setSearchTerm] = useState("");
+  /*
+  const [searchTerm, setSearchTerm] = useState(""); // removed because of eslint disable ts error of no unsed vars
+
+  */
+  const [, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   // getting search from Redux store

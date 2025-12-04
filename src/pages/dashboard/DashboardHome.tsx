@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router";
 import {
   BookOpen,
@@ -11,6 +12,7 @@ import { useGetMyEnrollmentsQuery } from "@/redux/features/enrollment/enrollment
 import { useGetCoursesQuery } from "@/redux/features/course/course.api";
 import type { ICourse } from "@/types/course";
 import type { IEnrollment } from "@/types/enrollment";
+import { useMemo } from "react";
 
 const DashboardHome = () => {
   const { data: enrollmentsData, isLoading: enrollmentsLoading } =
@@ -21,27 +23,45 @@ const DashboardHome = () => {
     sortOrder: "desc",
   });
 
-  console.log("enrollmentsData:", enrollmentsData);
-
   const isLoading = enrollmentsLoading || coursesLoading;
 
-  // Safely extract enrolled courses with proper type checking
-  const enrolledCourses: IEnrollment[] = Array.isArray(enrollmentsData?.data)
-    ? enrollmentsData.data
-    : Array.isArray(enrollmentsData)
-    ? enrollmentsData
-    : [];
+  // const enrolledCourses: IEnrollment[] = Array.isArray(enrollmentsData?.data) ? enrollmentsData.data: Array.isArray(enrollmentsData)? enrollmentsData: [];
 
-  // Check if coursesData has a nested structure or is directly the array
+  const enrolledCourses: IEnrollment[] = useMemo(() => {
+    if (!enrollmentsData) return [];
+
+    // Type assertion to bypass TypeScript's 'never' type
+    const data = enrollmentsData as any;
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    if (data?.data) {
+      const nestedData = data.data;
+      return Array.isArray(nestedData)
+        ? nestedData
+        : nestedData
+        ? [nestedData]
+        : [];
+    }
+
+    if (data?.result) {
+      const result = data.result;
+      return Array.isArray(result) ? result : result ? [result] : [];
+    }
+
+    return [];
+  }, [enrollmentsData]);
+
   const newCourses: ICourse[] = Array.isArray(coursesData?.data?.courses)
     ? coursesData.data.courses
     : Array.isArray(coursesData?.data)
     ? coursesData.data
     : Array.isArray(coursesData)
-    ? coursesData.slice(0, 4) // Take first 4 if it's an array
+    ? coursesData.slice(0, 4)
     : [];
 
-  // Safe statistics calculation
   const stats = {
     enrolledCourses: enrolledCourses.length,
     completedModules: enrolledCourses.reduce(
@@ -215,7 +235,10 @@ const DashboardHome = () => {
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-900 dark:text-white">
-                            {enrollment.courseId?.title || "Course"}
+                            {typeof enrollment.courseId === "object" &&
+                            enrollment.courseId !== null
+                              ? (enrollment.courseId as any).title || "Course"
+                              : "Course"}
                           </h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             Batch: {enrollment.batchId || "N/A"}

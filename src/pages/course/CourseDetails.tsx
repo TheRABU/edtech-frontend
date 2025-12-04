@@ -20,31 +20,51 @@ import { useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
+interface Module {
+  _id: string;
+  title: string;
+  description: string;
+  duration: number;
+  order: number;
+}
+
+interface Batch {
+  batchId: string;
+  startDate: string;
+  maxStudents?: number;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  category: string;
+  instructor: string;
+  price: string | number;
+  modules: Module[];
+  batches: Batch[];
+  tags: string[];
+}
+
 const CourseDetailsPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedBatch, setSelectedBatch] = useState<string>("");
+  const [selectedBatch, setSelectedBatch] = useState("");
 
   const { isAuthenticated } = useAuth();
 
+  // course details query the selected course will also be handled through this
   const { data, isLoading, isError } = useGetCourseByIdQuery(id || "");
 
+  // is user already enrolled or not
   const { data: enrollmentCheck, isLoading: checkingEnrollment } =
-    useCheckEnrollmentQuery(id || "", {
-      skip: !isAuthenticated || !id,
-    });
+    useCheckEnrollmentQuery(id || "");
 
-  // Enrollment mutation
+  // enroll mutation
   const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
 
-  console.log("enrollment check", enrollmentCheck);
-
   const handleEnroll = async () => {
-    if (!isAuthenticated) {
-      navigate("/login", { state: { from: `/courses/${id}` } });
-      return;
-    }
-
     if (!selectedBatch) {
       if (data?.data?.batches?.length === 1) {
         setSelectedBatch(data.data.batches[0].batchId);
@@ -64,8 +84,9 @@ const CourseDetailsPage = () => {
         courseId: id!,
         batchId,
       }).unwrap();
-
-      console.log("Enrollment successful:", result);
+      if (result && result.success === false) {
+        throw new Error(result.message || "Enrollment failed");
+      }
       navigate("/dashboard/courses", {
         state: {
           message: "Successfully enrolled in the course!",
@@ -76,7 +97,6 @@ const CourseDetailsPage = () => {
       console.error("Enrollment error:", error);
 
       if (error?.data?.message?.includes("Already enrolled")) {
-        // If already enrolled, redirect to dashboard
         navigate("/dashboard/courses", {
           state: {
             message: "You are already enrolled in this course",
@@ -84,10 +104,8 @@ const CourseDetailsPage = () => {
           },
         });
       } else if (error?.status === 401) {
-        // Unauthorized - redirect to login
         navigate("/login", { state: { from: `/courses/${id}` } });
       } else {
-        // Generic error
         alert(error?.data?.message || "Failed to enroll. Please try again.");
       }
     }
@@ -140,9 +158,9 @@ const CourseDetailsPage = () => {
     );
   }
 
-  const course = data.data;
+  const course: Course = data.data;
   const totalDuration = course.modules.reduce(
-    (total, module) => total + module.duration,
+    (total: number, module: Module) => total + module.duration,
     0
   );
 
@@ -156,13 +174,14 @@ const CourseDetailsPage = () => {
   let buttonColor = "bg-indigo-600 hover:bg-indigo-700";
   let isButtonDisabled = false;
 
+  // ENroll button state management
   if (!isAuthenticated) {
     buttonText = "Login to Enroll";
   } else if (checkingEnrollment) {
     buttonText = "Checking...";
     isButtonDisabled = true;
-  } else if (enrollmentCheck?.isEnrolled) {
-    buttonText = "Go to Course";
+  } else if (enrollmentCheck?.enrollmentId) {
+    buttonText = "Already enrolled Go to Course";
     buttonColor = "bg-green-600 hover:bg-green-700";
   } else if (isEnrolling) {
     buttonText = "Enrolling...";
@@ -171,7 +190,6 @@ const CourseDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
           <button
@@ -186,14 +204,13 @@ const CourseDetailsPage = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+          {/* Main */}
           <div className="lg:col-span-2">
-            {/* Course Image */}
             <div className="relative rounded-xl overflow-hidden mb-6 shadow-lg">
               <img
                 src={
                   course.thumbnail ||
-                  "https://images.pexels.com/photos/61180/pexels-photo-61180.jpeg"
+                  "https://images.pexels.com/photos-61180/pexels-photo-61180.jpeg"
                 }
                 alt={course.title}
                 className="w-full h-96 object-cover"
@@ -209,7 +226,7 @@ const CourseDetailsPage = () => {
               </div>
             </div>
 
-            {/* Course Info Grid */}
+            {/* Course  */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center gap-2 text-gray-600 mb-1">
@@ -270,7 +287,7 @@ const CourseDetailsPage = () => {
                   <h3 className="text-lg font-semibold text-gray-900">Tags</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {course.tags.map((tag, index) => (
+                  {course.tags.map((tag: string, index: number) => (
                     <span
                       key={index}
                       className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full"
@@ -290,7 +307,7 @@ const CourseDetailsPage = () => {
               <div className="space-y-3">
                 {[...course.modules]
                   .sort((a, b) => a.order - b.order)
-                  .map((module, index) => (
+                  .map((module: Module, index: number) => (
                     <div
                       key={module._id}
                       className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
@@ -349,7 +366,7 @@ const CourseDetailsPage = () => {
               )}
 
               {/* Batch Selection (only show if not enrolled and multiple batches) */}
-              {!enrollmentCheck?.isEnrolled &&
+              {!enrollmentCheck?.enrollmentId &&
                 course.batches.length > 1 &&
                 isAuthenticated && (
                   <div className="mb-4">
@@ -363,7 +380,7 @@ const CourseDetailsPage = () => {
                       disabled={isEnrolling}
                     >
                       <option value="">Choose a batch</option>
-                      {course.batches.map((batch, index) => (
+                      {course.batches.map((batch: Batch, index: number) => (
                         <option key={index} value={batch.batchId}>
                           {batch.batchId} - Starts:{" "}
                           {new Date(batch.startDate).toLocaleDateString()}
@@ -376,7 +393,7 @@ const CourseDetailsPage = () => {
               {/* Enroll Button */}
               <button
                 onClick={() => {
-                  if (enrollmentCheck?.isEnrolled) {
+                  if (enrollmentCheck?.enrollmentId) {
                     handleGoToCourse();
                   } else {
                     handleEnroll();
@@ -423,7 +440,6 @@ const CourseDetailsPage = () => {
                   </li>
                 </ul>
               </div>
-
               {/* Available Batches */}
               {course.batches.length > 0 && (
                 <div className="border-t border-gray-200 pt-4 mt-4">
@@ -431,7 +447,7 @@ const CourseDetailsPage = () => {
                     Available Batches:
                   </h3>
                   <div className="space-y-2">
-                    {course.batches.map((batch, index) => (
+                    {course.batches.map((batch: Batch, index: number) => (
                       <div
                         key={index}
                         className={`text-sm p-3 rounded-lg ${

@@ -1,6 +1,7 @@
 import { baseApi } from "@/redux/baseApi";
 
 export interface Enrollment {
+  [x: string]: any;
   _id: string;
   userId: string;
   courseId: string;
@@ -62,10 +63,7 @@ const enrollmentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Enrollments"],
     }),
-    checkEnrollment: builder.query<
-      { isEnrolled: boolean; enrollmentId?: string },
-      string
-    >({
+    checkEnrollment: builder.query({
       query: (courseId) => ({
         url: `/courses/enroll/check/${courseId}`,
         method: "GET",

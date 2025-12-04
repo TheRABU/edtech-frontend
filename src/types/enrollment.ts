@@ -2,50 +2,48 @@
 
 import type { ICourse } from "./course";
 
+// Base enrollment type (as returned by API without course populated)
 export interface IEnrollment {
-  _id: string; // Use string instead of Types.ObjectId
+  _id: string;
   userId: string;
-  courseId: string | ICourse; // Can be string ID or populated Course object
+  courseId: string; // Usually a string ID in base response
   batchId: string;
   progress: number;
   completedModules: string[];
-  enrolledAt: string; // Use string for ISO date
+  enrolledAt: string;
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-// For API response where course might be populated
+// For API response where course is populated
 export interface IPopulatedEnrollment extends Omit<IEnrollment, "courseId"> {
-  courseId: ICourse;
+  courseId: ICourse; // Populated course object
 }
 
-// For creating a new enrollment
-export interface ICreateEnrollment {
-  userId: string;
-  courseId: string;
-  batchId: string;
-  progress?: number;
-  completedModules?: string[];
+// Unified enrollment type that can be either string or ICourse
+export type Enrollment = IEnrollment | IPopulatedEnrollment;
+
+// Type guard to check if courseId is populated
+export function isCoursePopulated(
+  enrollment: IEnrollment | IPopulatedEnrollment
+): enrollment is IPopulatedEnrollment {
+  if (!enrollment || !enrollment.courseId) return false;
+
+  // Check if courseId is an object (populated course)
+  return (
+    typeof enrollment.courseId === "object" &&
+    enrollment.courseId !== null &&
+    "_id" in enrollment.courseId
+  );
 }
 
-// For updating an enrollment
-export interface IUpdateEnrollment {
-  progress?: number;
-  completedModules?: string[];
-  isDeleted?: boolean;
-}
-
-// API Response types
+// API Response types - Separate from the actual data models
 export interface IEnrollmentApiResponse {
   success: boolean;
   message: string;
   statusCode?: number;
-  data?:
-    | IEnrollment
-    | IEnrollment[]
-    | IPopulatedEnrollment
-    | IPopulatedEnrollment[];
+  data?: Enrollment | Enrollment[]; // Can be single or array
   meta?: {
     page?: number;
     limit?: number;
@@ -54,47 +52,11 @@ export interface IEnrollmentApiResponse {
   };
 }
 
-// Query parameters for fetching enrollments
-export interface IEnrollmentQueryParams {
-  userId?: string;
-  courseId?: string;
-  batchId?: string;
-  isDeleted?: boolean;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-  populateCourse?: boolean;
-}
-
-// Stats interface for dashboard
-export interface IEnrollmentStats {
-  totalEnrollments: number;
-  activeEnrollments: number;
-  averageProgress: number;
-  totalCompletedModules: number;
-  enrolledCoursesCount: number;
-}
-
-// For the enrollment with progress summary
-export interface IEnrollmentWithProgress extends IEnrollment {
-  lastAccessed?: string;
-  timeSpent?: number; // in minutes
-}
-
-// Type guard to check if courseId is populated
-export function isCoursePopulated(
-  enrollment: IEnrollment
-): enrollment is IPopulatedEnrollment {
-  return (
-    typeof enrollment.courseId === "object" && enrollment.courseId !== null
-  );
-}
-
-// Utility to safely get course title
-export function getCourseTitle(enrollment: IEnrollment): string {
-  if (isCoursePopulated(enrollment)) {
-    return enrollment.courseId.title || "Course";
-  }
-  return "Course";
+// For the enrollment enrollment API response
+export interface IEnrollmentResponse {
+  success: boolean;
+  message: string;
+  enrollmentId?: string;
+  isEnrolled?: boolean;
+  data?: Enrollment;
 }

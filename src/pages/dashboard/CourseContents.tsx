@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router";
 import {
   Play,
@@ -28,7 +28,12 @@ const CourseContent = () => {
 
   const [markComplete] = useMarkModuleCompleteMutation();
 
-  const enrollment = enrollmentResponse?.data || enrollmentResponse;
+  let enrollment;
+  if (enrollmentResponse && "data" in enrollmentResponse) {
+    enrollment = enrollmentResponse.data;
+  } else {
+    enrollment = enrollmentResponse;
+  }
 
   const course = enrollment?.courseId;
 

@@ -8,7 +8,7 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { useNavigate } from "react-router";
 
-const DashboardLayout = () => {
+const AdminDashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const { data: user } = useGetMeQuery(undefined);
@@ -27,15 +27,9 @@ const DashboardLayout = () => {
   const navigationItems = [
     {
       name: "Dashboard",
-      href: "/dashboard",
+      href: "/admin/dashboard",
       icon: Home,
-      current: location.pathname === "/dashboard",
-    },
-    {
-      name: "My Courses",
-      href: "/dashboard/courses",
-      icon: BookOpen,
-      current: location.pathname.startsWith("/dashboard/courses"),
+      current: location.pathname === "/admin/dashboard",
     },
 
     {
@@ -102,7 +96,7 @@ const DashboardLayout = () => {
                   {user?.name || "User"}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Student
+                  Admin
                 </p>
               </div>
             </div>
@@ -195,7 +189,7 @@ const DashboardLayout = () => {
                       {user?.name || "User"}
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Student
+                      Admin
                     </p>
                   </div>
                 </div>
@@ -258,4 +252,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AdminDashboardLayout;

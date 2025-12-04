@@ -1,7 +1,9 @@
+import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import RootLayout from "@/layouts/RootLayout";
 import Login from "@/pages/auth/Login";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
+import AdminDashboardHome from "@/pages/dashboard/AdminDashboardHome";
 import CourseContent from "@/pages/dashboard/CourseContents";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
 import MyCourses from "@/pages/dashboard/MyCourses";
@@ -54,6 +56,16 @@ const AllRoutes = () => {
               element: <CourseContent />,
             },
           ],
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <AdminDashboardLayout />,
+      children: [
+        {
+          path: "/admin/dashboard",
+          element: <AdminDashboardHome />,
         },
       ],
     },
