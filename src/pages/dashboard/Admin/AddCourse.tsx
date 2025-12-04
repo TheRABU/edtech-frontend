@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod";
 import {
   batchSchema,
@@ -40,7 +41,6 @@ const AddCourse = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<CreateCourseFormData>({
     resolver: zodResolver(createCourseSchema),
     defaultValues: {
