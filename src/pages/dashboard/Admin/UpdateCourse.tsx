@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
@@ -222,6 +224,13 @@ const UpdateCourse = () => {
   }
 
   if (isCourseError || !courseData?.data) {
+    // Safely extract error message
+    const errorMessage = courseError
+      ? (courseError as any)?.data?.message ||
+        (courseError as any)?.message ||
+        "The course you're trying to edit doesn't exist."
+      : "The course you're trying to edit doesn't exist.";
+
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -231,10 +240,7 @@ const UpdateCourse = () => {
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Course not found
           </h2>
-          <p className="text-gray-600 mb-6">
-            {courseError?.data?.message ||
-              "The course you're trying to edit doesn't exist."}
-          </p>
+          <p className="text-gray-600 mb-6">{errorMessage}</p>
           <button
             onClick={() => navigate("/admin/courses")}
             className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
