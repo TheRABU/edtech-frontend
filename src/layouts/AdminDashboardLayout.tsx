@@ -26,6 +26,12 @@ const AdminDashboardLayout = () => {
 
   const navigationItems = [
     {
+      name: "Home",
+      href: "/",
+      icon: HomeIcon,
+      current: location.pathname === "/",
+    },
+    {
       name: "Dashboard",
       href: "/admin/dashboard",
       icon: Home,
@@ -33,10 +39,10 @@ const AdminDashboardLayout = () => {
     },
 
     {
-      name: "Home",
-      href: "/",
-      icon: HomeIcon,
-      current: location.pathname === "/",
+      name: "Add Course",
+      href: "/admin/add-course",
+      icon: BookOpen,
+      current: location.pathname === "/admin/add-course",
     },
   ];
 

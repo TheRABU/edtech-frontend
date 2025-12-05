@@ -12,8 +12,6 @@ const Navbar = () => {
   const { data } = useGetMeQuery(undefined);
   const { data: isAdminData } = useIsAdminQuery(undefined);
 
-  console.log("isAdminData:", isAdminData);
-
   const searchValue = useSelector(
     (state: { search: { value: string } }) => state.search.value
   );
@@ -68,18 +66,26 @@ const Navbar = () => {
                 tabIndex={-1}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
+                {/* user route */}
                 <li>
                   <a className="justify-between text-white">
                     {data.data.name}
                     <span className="badge">Logged in</span>
                   </a>
                 </li>
-                <li>
-                  <Link to="/dashboard" className="justify-between text-white">
-                    Dashboard
-                  </Link>
-                </li>
+                {data?.data?.role === "student" && (
+                  <li>
+                    <Link
+                      to="/dashboard"
+                      className="justify-between text-white"
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                )}
+
                 <hr />
+                {/* admin route */}
                 {isAdminData?.data?.role === "ADMIN" && (
                   <li>
                     <Link
