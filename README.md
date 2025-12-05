@@ -1,73 +1,370 @@
-# React + TypeScript + Vite
+EdTech Frontend
+A modern, production-ready React application for the LMS platform EdTechBD. Built with React 19, TypeScript, Vite, and Tailwind CSS to deliver a seamless learning experience across all devices.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
+  - Authentication & User Management
+  - JWT-based authentication with HTTP-only cookies
 
-Currently, two official plugins are available:
+  - Protected routes with role-based access control
+  
+  - Student registration and login flows
+  
+  - Admin dashboard with elevated privileges
+  
+  - Persistent login state with Redux
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+   Course Discovery & Enrollment
+  - Interactive course browsing with filters
+    
+  - Server-side pagination and infinite scroll
+    
+  - Advanced search by title, instructor, category
+    
+  - Sorting by price, rating, and popularity
+    
+  - Detailed course view with syllabus preview
+    
+  - One-click enrollment with secure payment flow
+  
+  - Learning Experience
+  - Interactive video player with progress tracking which uses youtube embeded links
 
-## React Compiler
+   - Lesson completion marking
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Real-time progress indicators
 
-## Expanding the ESLint configuration
+- Course navigation and bookmarking
+- Student performance tracking
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Admin Management
+Full course CRUD operations with COURSE
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+
+
+### UI/UX Excellence
+Fully responsive design (mobile-first approach)
+
+Dark/Light theme support
+
+Smooth animations and transitions
+
+Accessible components (ARIA compliant)
+
+Loading states and skeletons
+
+Offline support with service workers
+
+Tech Stack
+Core Frameworks
+React 19 - Latest React with concurrent features
+
+TypeScript - Type safety and developer experience
+
+Vite - Next-generation frontend tooling
+
+Tailwind CSS - Utility-first CSS framework
+
+State & Data Management
+Redux Toolkit - Predictable state management
+
+React Query - Server state management
+
+Axios - HTTP client with interceptors
+
+Zod - Runtime type validation
+
+UI Components & Styling
+Radix UI - Accessible, unstyled UI primitives
+
+Lucide React - Beautiful SVG icons
+
+Class Variance Authority - Type-safe class utilities
+
+Tailwind Merge & clsx - Conditional class utilities
+
+Forms & Validation
+React Hook Form - Performant form management
+
+Zod Resolvers - Schema validation integration
+
+React Day Picker - Date selection components
+
+Routing & Navigation
+React Router v7 - Declarative routing
+
+React Toastify - Notification system
+
+Development Tools
+ESLint - Code quality and consistency
+
+DaisyUI - Tailwind component library
+
+Date-fns - Modern date manipulation
+
+
+ 
+######## Getting Started
+Prerequisites
+Node.js 18+ or 20+
+
+npm, yarn, or pnpm
+
+Backend server running (see backend README)
+
+Installation
+Clone and install dependencies:
+
+```
+bash
+git clone <repository-url>
+cd frontend
+npm install
+```
+Environment Configuration:
+Create a .env file in the root directory:
+
+env
+# API Configuration
+```
+VITE_API_BASE_URL= live-backend-link
+VITE_API_BASE_URL_LOCAL = http://localhost:5000/api/v1
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
+
+Development Server:
+```
+bash
+npm run dev
+Open http://localhost:5173 in your browser.
+```
+Production Build:
+```
+bash
+npm run build
+```
+
+Styling & Theming
+The application uses a modern design system built on Tailwind CSS with the following features:
+
+Design Tokens
+css
+:root {
+  --primary: 221 83% 53%;    /* Blue */
+  --secondary: 262 83% 58%;  /* Purple */
+  --accent: 142 76% 36%;     /* Green */
+  --neutral: 220 14% 96%;    /* Light Gray */
+  --base-100: 0 0% 100%;     /* White */
+  --base-900: 222 47% 11%;   /* Dark Blue */
+}
+Component Library
+Button Variants: primary, secondary, outline, ghost, destructive
+
+Card Types: default, elevated, bordered, interactive
+
+Form Elements: accessible inputs, selects, checkboxes
+
+Feedback States: loading, error, success, empty states
+
+Responsive Breakpoints
+Mobile: < 640px
+
+Tablet: 640px - 1024px
+
+Desktop: > 1024px
+
+🔧 Configuration
+Vite Configuration
+typescript
+// vite.config.ts
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
       },
-      // other options...
     },
   },
-])
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-*', 'lucide-react'],
+          state: ['@reduxjs/toolkit', 'react-redux'],
+        },
+      },
+    },
+  },
+});
+
+
+
+### Redux Store Configuration
+typescript
+
+
+
+Component Architecture
+Atomic Design Principles
+Atoms: Basic building blocks (Button, Input, Icon)
+
+Molecules: Simple combinations (SearchBar, CourseCard)
+
+Organisms: Complex sections (CourseList, DashboardHeader)
+
+Templates: Page layouts (DashboardLayout, AuthLayout)
+
+Pages: Complete views (HomePage, CourseDetailPage)
+
+Custom Hooks
+typescript
+// Example custom hook for authentication
+export function useAuth() {
+  const dispatch = useAppDispatch();
+  const { user, isLoading } = useAppSelector((state) => state.auth);
+
+  const login = async (credentials: LoginCredentials) => {
+    const result = await dispatch(loginUser(credentials));
+    return result;
+  };
+
+  const logout = () => dispatch(logoutUser());
+
+  return {
+    user,
+    isLoading,
+    login,
+    logout,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === 'admin',
+  };
+}
+
+ 
+#### API Integration
+Axios Configuration
+
+Axios intercepter was used
+
+/lib/axios.ts
+````
+import config from "@/config";
+import axios from "axios";
+
+export const axiosInstance = axios.create({
+  baseURL: config.baseUrl,
+  withCredentials: true,
+});
+
+// Add a request interceptor
+axiosInstance.interceptors.request.use(
+  function (config) {
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor
+axiosInstance.interceptors.response.use(
+  function onFulfilled(response) {
+    return response;
+  },
+  function onRejected(error) {
+
+    return Promise.reject(error);
+  }
+);
+
+````
+
+## Security & Best Practices
+Security Features
+HTTP-only cookies for JWT storage
+
+CSRF protection with axios defaults
+
+XSS prevention through React's built-in escaping
+
+Secure route protection with role-based guards
+
+Input sanitization and validation
+
+Performance Optimizations
+Code splitting with dynamic imports
+
+
+Memoization of expensive computations
+
+Virtual scrolling for long lists
+
+Service worker for offline support
+
+Accessibility
+ARIA labels and roles
+
+Keyboard navigation support
+
+Screen reader compatibility
+
+Focus management
+
+Color contrast compliance (WCAG 2.1)
+
+# Deployment
+Vercel Deployment
+bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+Netlify Deployment
+bash
+# Build command
+npm run build
+
+# Publish directory
+dist/
+Environment Variables for Production
+env
 ```
+VITE_API_BASE_URL=https://api.coursemaster.live/api/v1
+VITE_APP_ENV=production
+```
+
+
+
+
+
+          Support
+            Documentation: docs.coursemaster.live
+            
+            Issue Tracker: GitHub Issues
+            
+            Email Support: support@coursemaster.com
+
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+ Acknowledgments
+Vite for the excellent build tooling
+
+Tailwind CSS for the utility-first CSS
+
+React Hook Form for form management
+
+Built with ❤️ for the future of education
