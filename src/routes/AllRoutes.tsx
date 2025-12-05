@@ -4,6 +4,7 @@ import RootLayout from "@/layouts/RootLayout";
 import Login from "@/pages/auth/Login";
 import CourseDetailsPage from "@/pages/course/CourseDetails";
 import AllCoursesAdmin from "@/pages/dashboard/Admin/AllCoursesAdmin";
+import UpdateCourse from "@/pages/dashboard/Admin/UpdateCourse";
 
 import AdminDashboardHome from "@/pages/dashboard/AdminDashboardHome";
 import CourseContent from "@/pages/dashboard/CourseContents";
@@ -72,6 +73,10 @@ const AllRoutes = () => {
         {
           path: "/admin/add-course",
           element: <AdminDashboardHome />,
+        },
+        {
+          path: "/admin/courses/edit/:id",
+          element: <UpdateCourse />,
         },
       ],
     },

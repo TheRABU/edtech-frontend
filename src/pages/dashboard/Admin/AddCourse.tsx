@@ -136,16 +136,11 @@ const AddCourse = () => {
 
   const onSubmit = async (data: CreateCourseFormData) => {
     try {
-      // Format the data to match your API expectations
       const formattedData = {
         ...data,
-        // Ensure price is a number
         price: Number(data.price),
-        // Ensure tags are included
         tags: data.tags || [],
-        // Ensure modules are included
         modules: data.modules || [],
-        // Ensure batches are included
         batches: data.batches || [],
       };
 
@@ -153,7 +148,6 @@ const AddCourse = () => {
 
       if (result.success) {
         alert("Course created successfully!");
-        // Navigate to courses page or course detail
         navigate("/courses");
       } else {
         alert(result.message || "Failed to create course");

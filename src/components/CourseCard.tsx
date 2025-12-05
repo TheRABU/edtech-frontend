@@ -1,86 +1,107 @@
 import type { ICourse } from "@/types/course";
-import { Clock, BookOpen, DollarSign } from "lucide-react";
+import { Trash2, Edit, Eye } from "lucide-react";
 import { Link } from "react-router";
 
-const CourseCard = ({ ...props }: ICourse) => {
-  const totalDuration = (props.modules ?? []).reduce(
-    (total, module) => total + module.duration,
-    0
-  );
+interface CourseCardProps extends ICourse {
+  onDelete?: (courseId: string) => void;
+  isAdminView?: boolean;
+}
 
-  const formatDuration = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins}m`;
+const CourseCard = ({
+  _id,
+  title,
+  description,
+  thumbnail,
+  price,
+  category,
+  isDeleted,
+  modules = [],
+  batches = [],
+  onDelete,
+  isAdminView = false,
+}: CourseCardProps) => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (_id && onDelete) {
+      onDelete(_id);
     }
-    return `${mins}m`;
   };
 
   return (
-    <div className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
-      <Link to={`/courses/${props._id}`} className="block">
-        <div className="relative overflow-hidden h-48">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
+      {/* Course Image */}
+      <div className="h-48 bg-gray-200 relative">
+        {thumbnail ? (
           <img
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            src={
-              props.thumbnail ||
-              "https://images.pexels.com/photos/61180/pexels-photo-61180.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-            }
-            alt={props.title}
+            src={thumbnail}
+            alt={title}
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-          <div className="absolute top-3 right-3">
-            <span className="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-              {props.category}
-            </span>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className="text-gray-400">No thumbnail</span>
           </div>
+        )}
+
+        <div className="absolute top-2 right-2">
+          <span className="px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-full">
+            ${price}
+          </span>
         </div>
-      </Link>
+      </div>
 
-      <div className="p-5 flex flex-col flex-grow">
-        <Link to={`/courses/${props._id}`}>
-          <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors duration-200">
-            {props.title}
-          </h3>
-        </Link>
-
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
-          {props.description}
-        </p>
-
-        <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-          <span className="font-medium text-gray-700">
-            By {props.instructor}
+      {/* Course Content */}
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="font-bold text-gray-900 text-lg truncate">{title}</h3>
+          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
+            {category}
           </span>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-gray-600 mb-4 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            <span>{formatDuration(totalDuration)}</span>
-          </div>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{description}</p>
 
-          <div className="flex items-center gap-1">
-            <BookOpen className="w-4 h-4" />
-            <span>{(props.modules ?? []).length} Modules</span>
-          </div>
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span>{modules.length} modules</span>
+          <span>{batches.length} batches</span>
         </div>
+      </div>
 
-        <div className="flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-1">
-            <DollarSign className="w-5 h-5 text-indigo-600" />
-            <span className="text-2xl font-bold text-gray-900">
-              {props.price}
-            </span>
-          </div>
-
-          <Link to={`/courses/${props._id}`}>
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors duration-200">
-              View Details
-            </button>
+      {/* Action Buttons - Always visible */}
+      <div className="px-4 pb-4 pt-0">
+        <div className="flex gap-2">
+          {/* View Details Button - Goes to course details page */}
+          <Link
+            to={`/courses/${_id}`}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
+          >
+            <Eye className="h-4 w-4" />
+            View Details
           </Link>
+
+          {/* Update Button - Only shown in admin view, goes to edit page */}
+          {isAdminView && (
+            <Link
+              to={`/admin/courses/edit/${_id}`}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              title="Edit Course"
+            >
+              <Edit className="h-4 w-4" />
+              Update
+            </Link>
+          )}
+
+          {/* Delete Button - Only shown in admin view for active courses */}
+          {isAdminView && onDelete && !isDeleted && (
+            <button
+              onClick={handleDelete}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+              title="Delete Course"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </div>

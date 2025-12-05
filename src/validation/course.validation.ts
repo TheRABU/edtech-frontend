@@ -26,3 +26,15 @@ export const createCourseSchema = z.object({
   modules: z.array(moduleSchema).optional(),
   batches: z.array(batchSchema).min(1, "At least one batch is required"),
 });
+
+export const updateCourseSchema = z.object({
+  title: z.string().min(3).optional(),
+  description: z.string().min(10).optional(),
+  instructor: z.string().min(2).optional(),
+  price: z.number().nonnegative().optional(),
+  category: z.string().min(1).optional(),
+  tags: z.array(z.string()).optional(),
+  thumbnail: z.string().url().optional(),
+  modules: z.array(moduleSchema).optional(),
+  batches: z.array(batchSchema).optional(),
+});
