@@ -1,6 +1,28 @@
 EdTech Frontend
 A modern, production-ready React application for the LMS platform EdTechBD. Built with React 19, TypeScript, Vite, and Tailwind CSS to deliver a seamless learning experience across all devices.
 
+
+### Home Page
+![Home Page](./images/admin-addcourse.png)
+
+### Course Dashboard
+![Course Dashboard](./images/user-dashboard.png)
+
+### Admin Panel
+![Admin Panel](./images/admin-dashboard.png)
+
+### Home Page
+
+![Home Pagel](./images/homepage.png)
+
+### Course Content
+![Course Contentl](./images/allready-enrolled.png)
+
+### Course Content 2
+![Course Content 2](./images/coursecontent.png)
+
+
+
 ## Features
   - Authentication & User Management
   - JWT-based authentication with HTTP-only cookies
