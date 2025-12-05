@@ -14,17 +14,17 @@ A modern, production-ready React application for the LMS platform EdTechBD. Buil
   - Persistent login state with Redux
 
    Course Discovery & Enrollment
-    - Interactive course browsing with filters
+  - Interactive course browsing with filters
     
-    - Server-side pagination and infinite scroll
+  - Server-side pagination and infinite scroll
     
-    - Advanced search by title, instructor, category
+  - Advanced search by title, instructor, category
     
-    - Sorting by price, rating, and popularity
+  - Sorting by price, rating, and popularity
     
-    - Detailed course view with syllabus preview
+  - Detailed course view with syllabus preview
     
-    - One-click enrollment with secure payment flow
+  - One-click enrollment with secure payment flow
   
   - Learning Experience
   - Interactive video player with progress tracking which uses youtube embeded links
@@ -103,31 +103,6 @@ DaisyUI - Tailwind component library
 
 Date-fns - Modern date manipulation
 
-🏗️ Project Structure
-text
-src/
-├── api/              # API client configuration and endpoints
-├── assets/           # Static assets (images, fonts, icons)
-├── components/       # Reusable UI components
-│   ├── ui/          # Base components (Button, Card, etc.)
-│   ├── layout/      # Layout components (Header, Footer, Sidebar)
-│   └── shared/      # Shared components across features
-├── features/         # Feature-based modules
-│   ├── auth/        # Authentication flows
-│   ├── courses/     # Course browsing and management
-│   ├── dashboard/   # Student and admin dashboards
-│   ├── learning/    # Course consumption features
-│   └── admin/       # Admin management features
-├── hooks/           # Custom React hooks
-├── lib/             # Utility libraries and helpers
-├── pages/           # Page components (routes)
-├── routes/          # Route definitions and protected routes
-├── store/           # Redux store configuration and slices
-├── types/           # TypeScript type definitions
-├── utils/           # Helper functions and constants
-├── App.tsx          # Root application component
-├── main.tsx         # Application entry point
-└── vite-env.d.ts    # Vite type definitions
 
  
 ######## Getting Started
